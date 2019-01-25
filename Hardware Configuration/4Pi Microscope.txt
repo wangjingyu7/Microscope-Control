@@ -8,8 +8,8 @@
 % Each line in this file defines 1 device
 % Each line should be as follows: Device Company, Device Type, Device Function, Device Engine Path, Array of Device IDs/Ports/Channels
 
-["CVI","Shutter","4Pi Lower","C:\\Users\\engs1793\\Documents\\Microscope Control\\Device Library\\Shutters\\Generic DAQmx DIO Shutter\\Generic DAQmx DIO Shutter Engine.vi"], ["Dev1/port0/line1"]
-["CVI","Shutter","4Pi Upper","C:\\Users\\engs1793\\Documents\\Microscope Control\\Device Library\\Shutters\\Generic DAQmx DIO Shutter\\Generic DAQmx DIO Shutter Engine.vi"], ["Dev1/port0/line0"]
+["CVI","Shutter","4Pi Lower","C:\\Users\\engs1793\\Documents\\Microscope Control\\Device Library\\Shutters\\Generic DAQmx DIO Shutter\\Generic DAQmx DIO Shutter Engine.vi"], ["Dev1/port1/line3"]
+["CVI","Shutter","4Pi Upper","C:\\Users\\engs1793\\Documents\\Microscope Control\\Device Library\\Shutters\\Generic DAQmx DIO Shutter\\Generic DAQmx DIO Shutter Engine.vi"], ["Dev1/port1/line2"]
 ["PI","Stage","Sample XY","C:\\Users\\engs1793\\Documents\\Microscope Control\\Device Library\\Stages\\PI\\U-751 - Sample XY Piezomotor Stage\\U-751 Stage Engine.vi"], ["COM7"]
 ["PI","Stage","Sample Z","C:\\Users\\engs1793\\Documents\\Microscope Control\\Device Library\\Stages\\PI\\P-541 - Z Pizeo Stage\\P-541 Stage Engine.vi"], ["PICHASSIS"]
 ["ASI","Stage","Adj Cavity","C:\\Users\\engs1793\\Documents\\Microscope Control\\Device Library\\Stages\\ASI\\LS-50\\LS-50 Stage Engine.vi"], ["COM18"]
