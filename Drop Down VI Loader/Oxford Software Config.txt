@@ -1,0 +1,16 @@
+% Hardware Configuration File
+% Any line starting with "%" will be ignored
+% The first non-comment line must be the configuration name
+
+% Configuration Name:
+Oxford 4Pi
+
+% Each line in this file (below) is the path to one microscope module. They will be loaded in the order listed here.
+
+% List of VI paths to load:
+C:\Users\engs1793\OneDrive - Nexus365\4pi_workspace\Software\Microscope-Control\Microscope Modules\Device Panel\Device Panel.vi
+% C:\Users\engs1793\OneDrive - Nexus365\4pi_workspace\Software\Microscope-Control\Microscope Modules\Cambridge Laser Control\Cambridge Laser Control.vi
+% C:\Users\engs1793\OneDrive - Nexus365\4pi_workspace\Software\Microscope-Control\Microscope Modules\XY Sample Stage Control\XY Sample Stage.vi
+C:\Users\engs1793\OneDrive - Nexus365\4pi_workspace\Software\Microscope-Control\Microscope Modules\4Pi Sample Focus Control\4Pi Sample Focus Control.vi
+%C:\Users\engs1793\OneDrive - Nexus365\4pi_workspace\Software\Microscope-Control\Microscope Modules\4Pi Capture Manager\4Pi Capture Manager.vi
+%C:\Users\engs1793\OneDrive - Nexus365\4pi_workspace\Software\Microscope-Control\Microscope Modules\4Pi Interference Locator\4Pi Interference Locator.vi

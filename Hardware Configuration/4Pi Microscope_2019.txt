@@ -1,0 +1,22 @@
+% Hardware Configuration File
+% Any line starting with "%" will be ignored
+% The first non-comment line must be the configuration name
+
+% Configuration Name:
+4Pi Microscope_new
+
+% Each line in this file defines 1 device
+% Each line should be as follows: Device Company, Device Type, Device Function, Device Engine Path, Array of Device IDs/Ports/Channels
+
+["CVI","Shutter","4Pi Lower","C:\\Users\\engs1793\\OneDrive - Nexus365\\4pi_workspace\\Software\\Microscope-Control\\Device Library\\Shutters\\Generic DAQmx DIO Shutter\\Generic DAQmx DIO Shutter Engine.vi"], ["Dev1/port1/line3"]
+["CVI","Shutter","4Pi Upper","C:\\Users\\engs1793\\OneDrive - Nexus365\\4pi_workspace\\Software\\Microscope-Control\\Device Library\\Shutters\\Generic DAQmx DIO Shutter\\Generic DAQmx DIO Shutter Engine.vi"], ["Dev1/port1/line2"]
+["PI","Stage","Sample XY","C:\\Users\\engs1793\\OneDrive - Nexus365\\4pi_workspace\\Software\\Microscope-Control\\Device Library\\Stages\\PI\\U-751 - XY Piezomotor Stage\\U-751 Stage Engine.vi"], ["COM7"]
+["PI","Stage","Sample Z","C:\\Users\\engs1793\\OneDrive - Nexus365\\4pi_workspace\\Software\\Microscope-Control\\Device Library\\Stages\\PI\\P-541 - Z Pizeo Stage\\P-541 Stage Engine.vi"], ["PICHASSIS"]
+["ASI","Stage","Adj Cavity","C:\\Users\\engs1793\\OneDrive - Nexus365\\4pi_workspace\\Software\\Microscope-Control\\Device Library\\Stages\\ASI\\LS-50\\LS-50 Stage Engine.vi"], ["COM18"]
+["PI","Stage","Sample Coarse Z","C:\\Users\\engs1793\\OneDrive - Nexus365\\4pi_workspace\\Software\\Microscope-Control\\Device Library\\Stages\\PI\\M-227 - DC Mike Motors\\M-227 Stage Engine.vi"], ["COM5"]
+["PI","Stage","Objective Z","C:\\Users\\engs1793\\OneDrive - Nexus365\\4pi_workspace\\Software\\Microscope-Control\\Device Library\\Stages\\PI\\N-565 - Linear Translation Stage\\N-565 Stage Engine.vi"], ["COM6"]
+["PI","Stage","Objective XY","C:\\Users\\engs1793\\OneDrive - Nexus365\\4pi_workspace\\Software\\Microscope-Control\\Device Library\\Stages\\PI\\P-612 - XY Piezo Stage\\P-612 Stage Engine.vi"], ["PICHASSIS"]
+["Coherent","Laser","405 nm Excitation","C:\\Users\\engs1793\\OneDrive - Nexus365\\4pi_workspace\\Software\\Microscope-Control\\Device Library\\Lasers\\Coherent\\Obis\\Obis Engine.vi"], ["COM15"]
+["Coherent","Laser","488 nm Excitation","C:\\Users\\engs1793\\OneDrive - Nexus365\\4pi_workspace\\Software\\Microscope-Control\\Device Library\\Lasers\\Coherent\\Obis\\Obis Engine.vi"], ["COM19"]
+["MPB Com","Laser","546 nm Excitation","Z:\\Edward\\Microscope Control\\2016\\Device Library\\Lasers\\MPB Communications\\Visible Fiber Laser\\VF Laser Engine.vi"], ["COM21"]
+["Hamamatsu","Camera","Primary","C:\\Users\\engs1793\\OneDrive - Nexus365\\4pi_workspace\\Software\\Microscope-Control\\Device Library\\Cameras\\Hamamatsu\\Orca Flash\\Orca Flash Engine.vi"], ["0"]
