@@ -10,7 +10,7 @@ Oxford 4Pi
 % List of VI paths to load:
 C:\Users\engs1793\OneDrive - Nexus365\4pi_workspace\Software\Microscope-Control\Microscope Modules\Device Panel\Device Panel.vi
 % C:\Users\engs1793\OneDrive - Nexus365\4pi_workspace\Software\Microscope-Control\Microscope Modules\Cambridge Laser Control\Cambridge Laser Control.vi
-% C:\Users\engs1793\OneDrive - Nexus365\4pi_workspace\Software\Microscope-Control\Microscope Modules\XY Sample Stage Control\XY Sample Stage.vi
+C:\Users\engs1793\OneDrive - Nexus365\4pi_workspace\Software\Microscope-Control\Microscope Modules\XY Sample Stage Control\XY Sample Stage.vi
 C:\Users\engs1793\OneDrive - Nexus365\4pi_workspace\Software\Microscope-Control\Microscope Modules\4Pi Sample Focus Control\4Pi Sample Focus Control.vi
-%C:\Users\engs1793\OneDrive - Nexus365\4pi_workspace\Software\Microscope-Control\Microscope Modules\4Pi Capture Manager\4Pi Capture Manager.vi
-%C:\Users\engs1793\OneDrive - Nexus365\4pi_workspace\Software\Microscope-Control\Microscope Modules\4Pi Interference Locator\4Pi Interference Locator.vi
+C:\Users\engs1793\OneDrive - Nexus365\4pi_workspace\Software\Microscope-Control\Microscope Modules\4Pi Capture Manager\4Pi Capture Manager.vi
+C:\Users\engs1793\OneDrive - Nexus365\4pi_workspace\Software\Microscope-Control\Microscope Modules\4Pi Interference Locator\4Pi Interference Locator.vi
