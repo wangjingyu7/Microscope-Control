@@ -143,10 +143,16 @@ NB: DO NOT USE SPACES in this list!''')
         C0 = f['/WeightedLSCalib/C'][()]
         z0 = f['/WeightedLSCalib/z0'][()]
         n = int(f['/WeightedLSCalib/cart/RZern/n'][()])
+        name0 = f['/WeightedLSCalib/dm_serial'][()]
+        print(f'DM0: {name0}', args.dm0_calibration)
+        print()
     with File(args.dm1_calibration, 'r') as f:
         H1 = f['/WeightedLSCalib/H'][()]
         C1 = f['/WeightedLSCalib/C'][()]
         z1 = f['/WeightedLSCalib/z0'][()]
+        name1 = f['/WeightedLSCalib/dm_serial'][()]
+        print(f'DM1: {name1}', args.dm1_calibration)
+        print()
     r = RZern(n)
     assert(r.nk == H0.shape[0])
 
@@ -231,5 +237,6 @@ NB: DO NOT USE SPACES in this list!''')
             '..', '4Pi 4Pi Modes - Default Files', 'config.json')
         with open(fname, 'w') as f:
             json.dump(conf, f, sort_keys=True, indent=4)
-        print(f'Configuration written to {path.abspath(fname)}')
+        print('Configuration written to:')
+        print(path.abspath(fname))
         print()
