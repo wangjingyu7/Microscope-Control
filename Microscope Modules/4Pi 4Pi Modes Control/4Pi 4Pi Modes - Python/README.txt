@@ -5,6 +5,7 @@
 5) Type `python make_configuration.py ` followed by the options and hit enter
    For example:
    run make_configuration.py --dm0-calibration C17W005p050_20190228_130929-0.990mm.h5 --dm1-calibration C17W123p456_20190228_130929-0.990mm.h5
+6) Test the modes by running `python test.py`
 
 *** WARNING ***
 This LabVIEW code uses the obsolete CIUsb driver for the Boston Multi-DM. You
