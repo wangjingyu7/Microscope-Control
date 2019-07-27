@@ -4,4 +4,4 @@
    A list of available options will be printed on the console
    Choose your preferred options
 *) Type `python make_configuration_4pi.py ` followed by your preferred options without `--help` and hit enter
-*) Test the modes by running `python test_4pi.py`
+*) Test the modes by running `python test_configuration.py`
