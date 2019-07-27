@@ -18,16 +18,13 @@ import matplotlib.pyplot as plt  # noqa
 
 
 def get_noll_indices(args):
-    if args.disable_dm0 or args.disable_dm1:
-        raise NotImplementedError()
-
-    noll_min = np.array(args.noll_min, dtype=np.int)
-    noll_max = np.array(args.noll_max, dtype=np.int)
+    noll_min = np.array(args.min, dtype=np.int)
+    noll_max = np.array(args.max, dtype=np.int)
     minclude = np.array([
-        int(s) for s in args.include_4pi.split(',')
+        int(s) for s in args.include.split(',')
         if len(s) > 0], dtype=np.int)
     mexclude = np.array([
-        int(s) for s in args.exclude_4pi.split(',')
+        int(s) for s in args.exclude.split(',')
         if len(s) > 0], dtype=np.int)
     mrange1 = np.arange(noll_min, noll_max + 1, dtype=np.int)
     mrange = np.zeros(2*mrange1.size)
@@ -52,33 +49,34 @@ def get_noll_indices(args):
 
 
 def default_name(i, n, m):
+    n = f'Z_{i} Z_{n}^{m}'
     if i == 1:
-        return 'piston'
+        n += ' piston'
     elif i == 2:
-        return 'tip'
+        n += ' tip'
     elif i == 3:
-        return 'tilt'
+        n += ' tilt'
     elif i == 4:
-        return 'defocus'
+        n += ' defocus'
     elif m == 0:
-        return 'spherical'
+        n += ' spherical'
     elif abs(m) == 1:
-        return 'coma'
+        n += ' coma'
     elif abs(m) == 2:
-        return 'astigmatism'
+        n += ' astigmatism'
     elif abs(m) == 3:
-        return 'trefoil'
+        n += ' trefoil'
     elif abs(m) == 4:
-        return 'quadrafoil'
+        n += ' quadrafoil'
     elif abs(m) == 5:
-        return 'pentafoil'
-    else:
-        return ''
+        n += ' pentafoil'
+
+    return n
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
-        description='',
+        description='Make a double objective configuration using 4Pi modes',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--flipx', dest='flipx', action='store_true')
     parser.add_argument('--no-flipx', dest='flipx', action='store_false')
@@ -90,13 +88,7 @@ if __name__ == '__main__':
         '--rotate', default=0.0, type=float,
         help='Relative pupil rotation in degrees')
     parser.add_argument(
-        '--disable-dm0', action='store_true',
-        help='Disable DM0 (single DM control)')
-    parser.add_argument(
-        '--disable-dm1', action='store_true',
-        help='Disable DM1 (single DM control)')
-    parser.add_argument(
-        '--exclude-4pi', type=str, default='-1,2,3,4',
+        '--exclude', type=str, default='-1,2,3,4',
         metavar='INDICES',
         help='''
 Comma separated list of 4Pi modes to ignore, e.g.,
@@ -104,17 +96,17 @@ Comma separated list of 4Pi modes to ignore, e.g.,
 The sign denotes co/contra variant. The absolute value denotes a Noll index.
 NB: DO NOT USE SPACES in this list!''')
     parser.add_argument(
-        '--include-4pi', type=str, default='', metavar='INDICES',
+        '--include', type=str, default='', metavar='INDICES',
         help='''
 Comma separated list of 4Pi modes to include, e.g.,
 -1,2,3,4 to ignore contravariant piston and covariant tip/tilt/defocus.
 The sign denotes co/contra variant. The absolute value denotes a Noll index.
 NB: DO NOT USE SPACES in this list!''')
     parser.add_argument(
-        '--noll-min', type=int, default=5,
+        '--min', type=int, default=5,
         help='Minimum Zernike Noll index to consider')
     parser.add_argument(
-        '--noll-max', type=int, default=22,
+        '--max', type=int, default=22,
         help='Minimum Zernike Noll index to consider')
     args = parser.parse_args()
 
@@ -163,85 +155,82 @@ NB: DO NOT USE SPACES in this list!''')
     else:
         Fy = 1
 
-    if args.disable_dm0 or args.disable_dm1:
-        raise NotImplementedError()
-    else:
-        conf = {}
+    conf = {}
 
-        # serial numbers
-        conf['Serials'] = [calibs[0]['serial'], calibs[1]['serial']]
-        if conf['Serials'][0] == conf['Serials'][1]:
-            print('Error repeated serial number {conf["Serials"]}', sys.stderr)
-            sys.exit()
+    # serial numbers
+    conf['Serials'] = [calibs[0]['serial'], calibs[1]['serial']]
+    if conf['Serials'][0] == conf['Serials'][1]:
+        print('Error repeated serial number {conf["Serials"]}', sys.stderr)
+        sys.exit()
 
-        # flats excluding ttd
-        flats = []
-        for c in calibs:
-            z = c['z']
-            C = c['C']
+    # flats excluding ttd
+    flats = []
+    for c in calibs:
+        z = c['z']
+        C = c['C']
 
-            z[:4] = 0
-            flats.append(-np.dot(C, z))
+        z[:4] = 0
+        flats.append(-np.dot(C, z))
 
-        conf['Flats'] = np.concatenate(flats).tolist()
+    conf['Flats'] = np.concatenate(flats).tolist()
 
-        # control matrix
-        C0 = calibs[0]['C']
-        C1 = calibs[1]['C']
+    # control matrix
+    C0 = calibs[0]['C']
+    C1 = calibs[1]['C']
 
-        O1 = np.dot(Fy, np.dot(Fx, R))
-        C0 = np.dot(C0, O1.T)
-        zernike_indices = np.arange(1, Nz + 1)
-        T1 = np.zeros((2*Nz, 2*Nz))
-        all_4pi = list()
-        count = 0
-        for i, noll in enumerate(zernike_indices):
-            for s in [1, -1]:
-                all_4pi.append(s*noll)
-                T1[i, count] = 1.
-                T1[Nz + i, count] = s
-                count += 1
-        assert(matrix_rank(T1) == 2*Nz)
-        all_4pi = np.array(all_4pi, dtype=np.int)
+    O1 = np.dot(Fy, np.dot(Fx, R))
+    C0 = np.dot(C0, O1.T)
+    zernike_indices = np.arange(1, Nz + 1)
+    T1 = np.zeros((2*Nz, 2*Nz))
+    all_4pi = list()
+    count = 0
+    for i, noll in enumerate(zernike_indices):
+        for s in [1, -1]:
+            all_4pi.append(s*noll)
+            T1[i, count] = 1.
+            T1[Nz + i, count] = s
+            count += 1
+    assert(matrix_rank(T1) == 2*Nz)
+    all_4pi = np.array(all_4pi, dtype=np.int)
 
-        zernike_indices = get_noll_indices(args)
-        print('Selected Zernike indices are:')
-        print(zernike_indices)
-        print()
+    zernike_indices = get_noll_indices(args)
+    print('Selected Zernike indices are:')
+    print(zernike_indices)
+    print()
 
-        inds = []
-        for i in zernike_indices:
-            inds.append(np.where(all_4pi == i)[0][0])
-        check = all_4pi[inds]
-        assert(np.allclose(check, zernike_indices))
+    inds = []
+    for i in zernike_indices:
+        inds.append(np.where(all_4pi == i)[0][0])
+    check = all_4pi[inds]
+    assert(np.allclose(check, zernike_indices))
 
-        CC = np.zeros((2*C0.shape[0], C0.shape[1] + C1.shape[1]))
-        CC[:C0.shape[0], :C0.shape[1]] = C0
-        CC[C0.shape[0]:, C0.shape[1]:] = C1
-        T3 = np.dot(CC, T1)
-        T4 = T3[:, inds]
-        conf['Matrix'] = T4.tolist()
+    CC = np.zeros((2*C0.shape[0], C0.shape[1] + C1.shape[1]))
+    CC[:C0.shape[0], :C0.shape[1]] = C0
+    CC[C0.shape[0]:, C0.shape[1]:] = C1
+    T3 = np.dot(CC, T1)
+    T4 = T3[:, inds]
+    conf['Matrix'] = T4.tolist()
 
-        # mode names
-        ntab = r.ntab
-        mtab = r.mtab
-        modes = []
-        for i in zernike_indices:
-            if i > 0:
-                p = 'co-'
-            else:
-                p = 'contra-'
-            n = default_name(i, ntab[abs(i) - 1], mtab[abs(i) - 1])
-            modes.append(p + n)
+    # mode names
+    ntab = r.ntab
+    mtab = r.mtab
+    modes = []
+    for i in zernike_indices:
+        if i > 0:
+            p = 'co-'
+        else:
+            p = 'contra-'
+        n = default_name(i, ntab[abs(i) - 1], mtab[abs(i) - 1])
+        modes.append(p + n)
 
-        conf['Modes'] = modes
-        print('Selected mode names are:')
-        pprint(modes)
-        print()
+    conf['Modes'] = modes
+    print('Selected mode names are:')
+    pprint(modes)
+    print()
 
-        fname = path.join(deffiles, 'config.json')
-        with open(fname, 'w') as f:
-            json.dump(conf, f, sort_keys=True, indent=4)
-        print('Configuration written to:')
-        print(path.abspath(fname))
-        print()
+    fname = path.join(deffiles, 'config.json')
+    with open(fname, 'w') as f:
+        json.dump(conf, f, sort_keys=True, indent=4)
+    print('Configuration written to:')
+    print(path.abspath(fname))
+    print()
