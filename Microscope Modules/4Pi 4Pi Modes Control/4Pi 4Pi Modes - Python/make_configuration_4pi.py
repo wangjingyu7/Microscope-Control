@@ -118,8 +118,8 @@ NB: DO NOT USE SPACES in this list!''')
         help='Minimum Zernike Noll index to consider')
     args = parser.parse_args()
 
-    cfiles = glob(path.join(
-        '..', '4Pi 4Pi Modes - Default Files', '*.h5'))
+    deffiles = glob(path.join('..', '*Default Files*'))[0]
+    cfiles = glob(path.join(deffiles, '*.h5'))
     if len(cfiles) != 2:
         print(
             'Leave only *TWO* HDF5 calibration files in the ' +
@@ -239,8 +239,7 @@ NB: DO NOT USE SPACES in this list!''')
         pprint(modes)
         print()
 
-        fname = path.join(
-            '..', '4Pi 4Pi Modes - Default Files', 'config.json')
+        fname = path.join(deffiles, 'config.json')
         with open(fname, 'w') as f:
             json.dump(conf, f, sort_keys=True, indent=4)
         print('Configuration written to:')
