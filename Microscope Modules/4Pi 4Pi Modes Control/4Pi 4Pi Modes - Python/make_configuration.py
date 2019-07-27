@@ -129,9 +129,13 @@ NB: DO NOT USE SPACES in this list!''')
     calibs = []
     for c in sorted(cfiles):
         with File(c, 'r') as f:
+            wavelength = f['/WeightedLSCalib/wavelength'][()]
+            k = wavelength/(2*np.pi)
+            H = k*f['/WeightedLSCalib/H'][()]
+            C = f['/WeightedLSCalib/C'][()]/k
             d = {
-                'H': f['/WeightedLSCalib/H'][()],
-                'C': f['/WeightedLSCalib/C'][()],
+                'H': H,
+                'C': C,
                 'z': f['/WeightedLSCalib/z0'][()],
                 'n': int(f['/WeightedLSCalib/cart/RZern/n'][()]),
                 'serial': f['/WeightedLSCalib/dm_serial'][()],
