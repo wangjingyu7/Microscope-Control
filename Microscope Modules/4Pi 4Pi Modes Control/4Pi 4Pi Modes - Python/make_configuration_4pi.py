@@ -130,7 +130,7 @@ NB: DO NOT USE SPACES in this list!''')
     for c in sorted(cfiles):
         with File(c, 'r') as f:
             wavelength = f['/WeightedLSCalib/wavelength'][()]
-            k = wavelength/(2*np.pi)
+            k = wavelength/(2*np.pi)/1000
             H = k*f['/WeightedLSCalib/H'][()]
             C = f['/WeightedLSCalib/C'][()]/k
             d = {
