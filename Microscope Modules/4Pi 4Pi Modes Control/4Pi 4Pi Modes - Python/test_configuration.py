@@ -10,8 +10,8 @@ from os import path
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
     QGridLayout, QLabel, QWidget,
-    QScrollArea, QSlider, QDoubleSpinBox, QFrame,
-    QApplication, QMainWindow, QPushButton,
+    QScrollArea, QSlider, QDoubleSpinBox, QSplitter,
+    QApplication, QMainWindow, QPushButton, QFrame,
     )
 from matplotlib.figure import Figure
 
@@ -177,7 +177,10 @@ class DMWindow(QMainWindow):
         self.C = C
         self.modes = modes
         self.dmplot0 = DMPlot()
-        self.dmplot1 = DMPlot()
+        if C.shape[0] == 140:
+            self.dmplot1 = None
+        else:
+            self.dmplot1 = DMPlot()
         self.u = np.zeros(C.shape[0])
         self.z = np.zeros(C.shape[1])
 
@@ -186,17 +189,19 @@ class DMWindow(QMainWindow):
         ima0 = self.dmplot0.draw(ax0, self.u[:140])
         ax0.axis('off')
 
-        fig1 = FigureCanvas(Figure(figsize=(2, 2)))
-        ax1 = fig1.figure.subplots(1, 1)
-        ima1 = self.dmplot1.draw(ax1, self.u[140:])
-        ax1.axis('off')
+        if self.dmplot1:
+            fig1 = FigureCanvas(Figure(figsize=(2, 2)))
+            ax1 = fig1.figure.subplots(1, 1)
+            ima1 = self.dmplot1.draw(ax1, self.u[140:])
+            ax1.axis('off')
 
         def update():
             self.u = np.dot(self.C, self.z)
             ima0.set_data(self.dmplot0.compute_pattern(self.u[:140]))
             ax0.figure.canvas.draw()
-            ima1.set_data(self.dmplot1.compute_pattern(self.u[140:]))
-            ax1.figure.canvas.draw()
+            if self.dmplot1:
+                ima1.set_data(self.dmplot1.compute_pattern(self.u[140:]))
+                ax1.figure.canvas.draw()
 
         def make_callback(i):
             def f(r):
@@ -228,13 +233,16 @@ class DMWindow(QMainWindow):
 
         breset.clicked.connect(reset_fun)
 
-        main = QFrame()
-        top = QGridLayout()
-        top.addWidget(fig0, 0, 0)
-        top.addWidget(fig1, 0, 1)
-        top.addWidget(scroll, 1, 0, 1, 2)
-        top.addWidget(breset, 2, 0)
-        main.setLayout(top)
+        main = QSplitter(Qt.Vertical)
+        top = QFrame()
+        lay = QGridLayout()
+        top.setLayout(lay)
+        lay.addWidget(fig0, 0, 0)
+        if self.dmplot1:
+            lay.addWidget(fig1, 0, 1)
+        lay.addWidget(breset, 1, 0)
+        main.addWidget(top)
+        main.addWidget(scroll)
         self.setCentralWidget(main)
 
 
