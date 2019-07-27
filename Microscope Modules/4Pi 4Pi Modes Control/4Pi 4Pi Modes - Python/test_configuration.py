@@ -4,6 +4,7 @@
 import sys
 import numpy as np
 import json  # noqa
+import argparse
 
 from os import path
 
@@ -248,6 +249,12 @@ class DMWindow(QMainWindow):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+
+    args = app.arguments()
+    parser = argparse.ArgumentParser(
+        description='',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+
     fname = path.join(get_def_files(), 'config.json')
     with open(fname, 'r') as f:
         conf = json.load(f)
