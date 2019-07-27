@@ -6,6 +6,7 @@ import numpy as np
 import json  # noqa
 import argparse
 
+from glob import glob
 from pprint import pprint
 from os import path
 from h5py import File
@@ -117,38 +118,31 @@ NB: DO NOT USE SPACES in this list!''')
         help='Minimum Zernike Noll index to consider')
     args = parser.parse_args()
 
-    if (
-            args.dm0_calibration is None or
-            not path.isfile(args.dm0_calibration)):
+    cfiles = glob(path.join(
+        '..', '4Pi 4Pi Modes - Default Files', '*.h5'))
+    if len(cfiles) != 2:
         print(
-            'Missing or wrong path for --dm0-calibration-file',
-            file=sys.stderr)
-        sys.exit()
-    if (
-            args.dm1_calibration is None or
-            not path.isfile(args.dm1_calibration)):
-        print(
-            'Missing or wrong path for --dm1-calibration-file',
-            file=sys.stderr)
+            'Leave only *TWO* HDF5 calibration files in the ' +
+            'Default Files folder before running this script', file=sys.stderr)
         sys.exit()
 
-    with File(args.dm0_calibration, 'r') as f:
-        H0 = f['/WeightedLSCalib/H'][()]
-        C0 = f['/WeightedLSCalib/C'][()]
-        z0 = f['/WeightedLSCalib/z0'][()]
-        n = int(f['/WeightedLSCalib/cart/RZern/n'][()])
-        name0 = f['/WeightedLSCalib/dm_serial'][()]
-        print(f'DM0: {name0}', args.dm0_calibration)
-        print()
-    with File(args.dm1_calibration, 'r') as f:
-        H1 = f['/WeightedLSCalib/H'][()]
-        C1 = f['/WeightedLSCalib/C'][()]
-        z1 = f['/WeightedLSCalib/z0'][()]
-        name1 = f['/WeightedLSCalib/dm_serial'][()]
-        print(f'DM1: {name1}', args.dm1_calibration)
-        print()
-    r = RZern(n)
-    assert(r.nk == H0.shape[0])
+    calibs = []
+    for c in sorted(cfiles):
+        with File(c, 'r') as f:
+            d = {
+                'H': f['/WeightedLSCalib/H'][()],
+                'C': f['/WeightedLSCalib/C'][()],
+                'z': f['/WeightedLSCalib/z0'][()],
+                'n': int(f['/WeightedLSCalib/cart/RZern/n'][()]),
+                'serial': f['/WeightedLSCalib/dm_serial'][()],
+            }
+            print(f'DM: {d["serial"]} file: {c}')
+            calibs.append(d)
+
+    r = RZern(calibs[0]['n'])
+    assert(r.nk == calibs[0]['H'].shape[0])
+    assert(r.nk == calibs[1]['H'].shape[0])
+    Nz = r.nk
 
     if args.rotate is not None:
         R = r.make_rotation(args.rotate)
@@ -170,16 +164,29 @@ NB: DO NOT USE SPACES in this list!''')
     else:
         conf = {}
 
-        z0[:4] = 0
-        u0 = -np.dot(C0, z0)
-        z1[:4] = 0
-        u1 = -np.dot(C1, z1)
-        conf['Flats'] = np.concatenate((u0, u1)).tolist()
+        # serial numbers
+        conf['Serials'] = [calibs[0]['serial'], calibs[1]['serial']]
+        if conf['Serials'][0] == conf['Serials'][1]:
+            print('Error repeated serial number {conf["Serials"]}', sys.stderr)
+            sys.exit()
+
+        # flats excluding ttd
+        flats = []
+        for c in calibs:
+            z = c['z']
+            C = c['C']
+
+            z[:4] = 0
+            flats.append(-np.dot(C, z))
+
+        conf['Flats'] = np.concatenate(flats).tolist()
+
+        # control matrix
+        C0 = calibs[0]['C']
+        C1 = calibs[1]['C']
 
         O1 = np.dot(Fy, np.dot(Fx, R))
         C0 = np.dot(C0, O1.T)
-        Nz = H0.shape[0]
-        assert(Nz == H1.shape[0])
         zernike_indices = np.arange(1, Nz + 1)
         T1 = np.zeros((2*Nz, 2*Nz))
         all_4pi = list()
@@ -211,6 +218,7 @@ NB: DO NOT USE SPACES in this list!''')
         T4 = T3[:, inds]
         conf['Matrix'] = T4.tolist()
 
+        # mode names
         ntab = r.ntab
         mtab = r.mtab
         modes = []
