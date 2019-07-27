@@ -17,6 +17,10 @@ from czernike import RZern
 import matplotlib.pyplot as plt  # noqa
 
 
+def get_def_files():
+    return glob(path.join('..', '*Default Files*'))[0]
+
+
 def get_noll_indices(args):
     noll_min = np.array(args.min, dtype=np.int)
     noll_max = np.array(args.max, dtype=np.int)
@@ -48,36 +52,60 @@ def get_noll_indices(args):
     return zernike_indices
 
 
-def default_name(i, n, m):
-    n = f'Z_{i} Z_{n}^{m}'
+def default_name(args, i, n, m):
     if i == 1:
-        n += ' piston'
+        s = 'piston'
     elif i == 2:
-        n += ' tip'
+        s = ' tip'
     elif i == 3:
-        n += ' tilt'
+        s = 'tilt'
     elif i == 4:
-        n += ' defocus'
+        s = 'defocus'
     elif m == 0:
-        n += ' spherical'
+        s = 'spherical'
     elif abs(m) == 1:
-        n += ' coma'
+        s = 'coma'
     elif abs(m) == 2:
-        n += ' astigmatism'
+        s = 'astigmatism'
     elif abs(m) == 3:
-        n += ' trefoil'
+        s = 'trefoil'
     elif abs(m) == 4:
-        n += ' quadrafoil'
+        s = 'quadrafoil'
     elif abs(m) == 5:
-        n += ' pentafoil'
+        s = 'pentafoil'
+    else:
+        s = ''
 
-    return n
+    if s != '':
+        if i > 0:
+            s = 'co-' + s
+        else:
+            s = 'contra-' + s
+
+    str1 = []
+    if args.zernike_name:
+        str1.append(s)
+    if args.zernike_noll:
+        str1.append(f'{i}')
+    if args.zernike_orders:
+        str1.append(f'{n}:{m}')
+
+    return ' '.join(str1)
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Make a double objective configuration using 4Pi modes',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument(
+        '--zernike-name', action='store_true', default=True,
+        help='Include names of Zernike aberrations')
+    parser.add_argument(
+        '--zernike-noll', action='store_true',
+        help='Include Noll enumeration of Zernike modes')
+    parser.add_argument(
+        '--zernike-orders', action='store_true',
+        help='Include azimuthal and radial orders of Zernike modes')
     parser.add_argument('--flipx', dest='flipx', action='store_true')
     parser.add_argument('--no-flipx', dest='flipx', action='store_false')
     parser.set_defaults(flipx=0)
@@ -110,8 +138,7 @@ NB: DO NOT USE SPACES in this list!''')
         help='Minimum Zernike Noll index to consider')
     args = parser.parse_args()
 
-    deffiles = glob(path.join('..', '*Default Files*'))[0]
-    cfiles = glob(path.join(deffiles, '*.h5'))
+    cfiles = glob(path.join(get_def_files(), '*.h5'))
     if len(cfiles) != 2:
         print(
             'Leave only *TWO* HDF5 calibration files in the ' +
@@ -216,19 +243,14 @@ NB: DO NOT USE SPACES in this list!''')
     mtab = r.mtab
     modes = []
     for i in zernike_indices:
-        if i > 0:
-            p = 'co-'
-        else:
-            p = 'contra-'
-        n = default_name(i, ntab[abs(i) - 1], mtab[abs(i) - 1])
-        modes.append(p + n)
+        modes.append(default_name(args, i, ntab[abs(i) - 1], mtab[abs(i) - 1]))
 
     conf['Modes'] = modes
     print('Selected mode names are:')
     pprint(modes)
     print()
 
-    fname = path.join(deffiles, 'config.json')
+    fname = path.join(get_def_files(), 'config.json')
     with open(fname, 'w') as f:
         json.dump(conf, f, sort_keys=True, indent=4)
     print('Configuration written to:')

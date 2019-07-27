@@ -21,6 +21,9 @@ from dmplot import DMPlot
 import matplotlib.pyplot as plt  # noqa
 
 
+from make_configuration_4pi import get_def_files
+
+
 class RelSlider:
 
     def __init__(self, val, cb):
@@ -237,13 +240,9 @@ class DMWindow(QMainWindow):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    fname = path.join(
-        '..', '4Pi 4Pi Modes - Default Files', 'config.json')
+    fname = path.join(get_def_files(), 'config.json')
     with open(fname, 'r') as f:
         conf = json.load(f)
-
-    dm0 = DMPlot()
-    dm1 = DMPlot()
 
     C = np.array(conf['Matrix'])
     modes = conf['Modes']

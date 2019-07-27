@@ -46,6 +46,32 @@ def get_noll_indices(args):
     return zernike_indices
 
 
+def default_name(i, n, m):
+    n = f'Z_{i} Z_{n}^{m}'
+    if i == 1:
+        n += ' piston'
+    elif i == 2:
+        n += ' tip'
+    elif i == 3:
+        n += ' tilt'
+    elif i == 4:
+        n += ' defocus'
+    elif m == 0:
+        n += ' spherical'
+    elif abs(m) == 1:
+        n += ' coma'
+    elif abs(m) == 2:
+        n += ' astigmatism'
+    elif abs(m) == 3:
+        n += ' trefoil'
+    elif abs(m) == 4:
+        n += ' quadrafoil'
+    elif abs(m) == 5:
+        n += ' pentafoil'
+
+    return n
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Make a single objective configuration using Zernikes',
@@ -80,7 +106,7 @@ NB: DO NOT USE SPACES in this list!''')
         help='Minimum Zernike Noll index to consider')
     args = parser.parse_args()
 
-    deffiles = glob(path.join('..', '*Default Files*'))[0]
+    deffiles = get_def_files()
     cfiles = glob(path.join(deffiles, '*.h5'))
     selection = -1
     while True:
