@@ -79,15 +79,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument(
-        '--dm0-calibration', type=str, metavar='HDF5',
-        help='Calibration file for DM0 (the first DM powered up in sequence)')
-    parser.add_argument(
-        '--dm1-calibration', type=str, metavar='HDF5',
-        help='Calibration file for DM0 (the second DM powered up in sequence)')
     parser.add_argument('--flipx', dest='flipx', action='store_true')
     parser.add_argument('--no-flipx', dest='flipx', action='store_false')
-    parser.set_defaults(flipx=1)
+    parser.set_defaults(flipx=0)
     parser.add_argument('--flipy', dest='flipy', action='store_true')
     parser.add_argument('--no-flipy', dest='flipy', action='store_false')
     parser.set_defaults(flipy=1)
