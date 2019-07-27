@@ -8,6 +8,8 @@ import argparse
 
 from os import path
 
+from numpy.linalg import norm
+
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
     QGridLayout, QLabel, QWidget,
@@ -171,17 +173,53 @@ class RelSlider:
         self.qsr = None
 
 
+class SquareRoot:
+
+    name = 'v = 2.0*np.sqrt((u + 1.0)/2.0) - 1.0'
+
+    def __call__(self, u):
+        assert(np.all(np.isfinite(u)))
+
+        if norm(u, np.inf) > 1.:
+            self.log.info('saturation')
+            u[u > 1.] = 1.
+            u[u < -1.] = -1.
+        assert(norm(u, np.inf) <= 1.)
+
+        v = 2*np.sqrt((u + 1.0)/2.0) - 1.0
+        assert(np.all(np.isfinite(v)))
+        assert(norm(v, np.inf) <= 1.)
+        del u
+
+        return v
+
+    def __str__(self):
+        return self.name
+
+
 class DMWindow(QMainWindow):
 
-    def __init__(self, app, C, modes):
+    def __init__(self, args, app, C, modes, serials):
         super().__init__()
+        self.args = args
         self.C = C
         self.modes = modes
+        self.serials = serials
         self.dmplot0 = DMPlot()
         if C.shape[0] == 140:
             self.dmplot1 = None
         else:
             self.dmplot1 = DMPlot()
+
+        hwdms = []
+        if args.hardware:
+            from bmc import BMC
+            for s in serials:
+                d = BMC()
+                d.open(s)
+                d.set_transform(SquareRoot())
+                hwdms.append(d)
+
         self.u = np.zeros(C.shape[0])
         self.z = np.zeros(C.shape[1])
 
@@ -203,6 +241,10 @@ class DMWindow(QMainWindow):
             if self.dmplot1:
                 ima1.set_data(self.dmplot1.compute_pattern(self.u[140:]))
                 ax1.figure.canvas.draw()
+            count = 0
+            for h in hwdms:
+                h.write(self.u[count:(count + 140)])
+                count += 140
 
         def make_callback(i):
             def f(r):
@@ -254,6 +296,10 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument(
+        '--hardware', action='store_true',
+        help='Drive the DM hardware as well')
+    args = parser.parse_args(args[1:])
 
     fname = path.join(get_def_files(), 'config.json')
     with open(fname, 'r') as f:
@@ -261,8 +307,9 @@ if __name__ == '__main__':
 
     C = np.array(conf['Matrix'])
     modes = conf['Modes']
+    serials = conf['Serials']
 
-    zwindow = DMWindow(app, C, modes)
+    zwindow = DMWindow(args, app, C, modes, serials)
     zwindow.show()
 
     sys.exit(app.exec_())
