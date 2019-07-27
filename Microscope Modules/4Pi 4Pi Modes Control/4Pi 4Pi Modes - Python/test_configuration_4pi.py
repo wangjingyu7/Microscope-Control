@@ -205,16 +205,22 @@ class DMWindow(QMainWindow):
         scroll.setWidget(QWidget())
         scroll.setWidgetResizable(True)
         lay = QGridLayout(scroll.widget())
+        self.sliders = []
         for i in range(len(modes)):
             lab = QLabel(modes[i])
             slider = RelSlider(0., make_callback(i))
             lay.addWidget(lab, i, 0)
             slider.add_to_layout(lay, i, 1)
+            self.sliders.append(slider)
 
         breset = QPushButton('reset')
 
         def reset_fun():
             self.z *= 0.
+            for s in self.sliders:
+                s.block()
+                s.set_value(0.)
+                s.unblock()
             update()
 
         breset.clicked.connect(reset_fun)
