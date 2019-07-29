@@ -91,21 +91,36 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Make a double objective configuration using 4Pi modes',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+
     parser.add_argument(
-        '--zernike-name', action='store_true', default=True,
+        '--zernike-name', dest='zernike_name', action='store_true',
         help='Include names of Zernike aberrations')
     parser.add_argument(
-        '--zernike-noll', action='store_true', default=True,
-        help='Include Noll enumeration of Zernike modes')
+        '--no-zernike-name', dest='zernike_name', action='store_false')
+    parser.set_defaults(zernike_name=1)
+
     parser.add_argument(
-        '--zernike-orders', action='store_true',
-        help='Include azimuthal and radial orders of Zernike modes')
+        '--zernike-noll', dest='zernike_noll', action='store_true',
+        help='Include noll index of Zernike aberrations')
+    parser.add_argument(
+        '--no-zernike-noll', dest='zernike_noll', action='store_false')
+    parser.set_defaults(zernike_noll=1)
+
+    parser.add_argument(
+        '--zernike-orders', dest='zernike_orders', action='store_true',
+        help='Include radial and azimuthal order of Zernike aberrations')
+    parser.add_argument(
+        '--no-zernike-orders', dest='zernike_orders', action='store_false')
+    parser.set_defaults(zernike_orders=0)
+
     parser.add_argument('--flipx', dest='flipx', action='store_true')
     parser.add_argument('--no-flipx', dest='flipx', action='store_false')
     parser.set_defaults(flipx=0)
+
     parser.add_argument('--flipy', dest='flipy', action='store_true')
     parser.add_argument('--no-flipy', dest='flipy', action='store_false')
     parser.set_defaults(flipy=1)
+
     parser.add_argument(
         '--rotate', default=0.0, type=float,
         help='Relative pupil rotation in degrees')
@@ -125,7 +140,7 @@ Comma separated list of 4Pi modes to include, e.g.,
 The sign denotes co/contra variant. The absolute value denotes a Noll index.
 NB: DO NOT USE SPACES in this list!''')
     parser.add_argument(
-        '--min', type=int, default=5,
+        '--min', type=int, default=1,
         help='Minimum Zernike Noll index to consider')
     parser.add_argument(
         '--max', type=int, default=22,

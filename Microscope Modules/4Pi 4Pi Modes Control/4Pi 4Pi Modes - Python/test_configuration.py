@@ -212,19 +212,14 @@ class DMWindow(QMainWindow):
 
         hwdms = []
         if args.hardware:
-            fail = 1
             try:
                 from bmc import BMC
-                fail = 0
             except Exception:
-                pass
-            try:
-                from devwraps.bmc import BMC
-                fail = 0
-            except Exception:
-                pass
-            if fail:
-                raise ValueError('Cannot open DMs')
+                try:
+                    from devwraps.bmc import BMC
+                except Exception:
+                    raise ValueError('Cannot open DMs')
+
             for s in serials:
                 d = BMC()
                 d.open(s)
@@ -309,7 +304,7 @@ if __name__ == '__main__':
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument(
         '--hardware', action='store_true',
-        help='Drive the DM hardware as well')
+        help='Actually drive the DM hardware')
     args = parser.parse_args(args[1:])
 
     fname = path.join(get_def_files(), 'config.json')

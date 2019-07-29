@@ -71,10 +71,10 @@ def default_name(args, i, n, m):
         s = ''
 
     str1 = []
-    if args.zernike_name:
-        str1.append(s)
     if args.zernike_noll:
         str1.append(f'{i}')
+    if args.zernike_name:
+        str1.append(s)
     if args.zernike_orders:
         str1.append(f'{n}:{m}')
 
@@ -85,15 +85,21 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Make a single objective configuration using Zernikes',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+
     parser.add_argument(
-        '--zernike-name', action='store_true', default=True,
+        '--zernike-name', dest='zernike_name', action='store_true',
         help='Include names of Zernike aberrations')
     parser.add_argument(
-        '--zernike-noll', action='store_true',
-        help='Include Noll enumeration of Zernike modes')
+        '--no-zernike-name', dest='zernike_name', action='store_false')
+    parser.set_defaults(zernike_name=1)
+
     parser.add_argument(
-        '--zernike-orders', action='store_true',
-        help='Include azimuthal and radial orders of Zernike modes')
+        '--zernike-noll', dest='zernike_noll', action='store_true',
+        help='Include noll index of Zernike aberrations')
+    parser.add_argument(
+        '--no-zernike-noll', dest='zernike_noll', action='store_false')
+    parser.set_defaults(zernike_noll=1)
+
     parser.add_argument('--flipx', dest='flipx', action='store_true')
     parser.add_argument('--no-flipx', dest='flipx', action='store_false')
     parser.set_defaults(flipx=0)
