@@ -53,13 +53,13 @@ def get_noll_indices(args):
 
 
 def default_name(args, i, n, m):
-    if i == 1:
+    if abs(i) == 1:
         s = 'piston'
-    elif i == 2:
+    elif abs(i) == 2:
         s = ' tip'
-    elif i == 3:
+    elif abs(i) == 3:
         s = 'tilt'
-    elif i == 4:
+    elif abs(i) == 4:
         s = 'defocus'
     elif m == 0:
         s = 'spherical'
@@ -76,17 +76,11 @@ def default_name(args, i, n, m):
     else:
         s = ''
 
-    if s != '':
-        if i > 0:
-            s = 'co-' + s
-        else:
-            s = 'contra-' + s
-
     str1 = []
-    if args.zernike_name:
-        str1.append(s)
     if args.zernike_noll:
         str1.append(f'{i}')
+    if args.zernike_name:
+        str1.append(s)
     if args.zernike_orders:
         str1.append(f'{n}:{m}')
 
@@ -101,7 +95,7 @@ if __name__ == '__main__':
         '--zernike-name', action='store_true', default=True,
         help='Include names of Zernike aberrations')
     parser.add_argument(
-        '--zernike-noll', action='store_true',
+        '--zernike-noll', action='store_true', default=True,
         help='Include Noll enumeration of Zernike modes')
     parser.add_argument(
         '--zernike-orders', action='store_true',

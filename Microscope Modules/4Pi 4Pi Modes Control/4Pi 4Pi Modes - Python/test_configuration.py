@@ -181,7 +181,6 @@ class SquareRoot:
         assert(np.all(np.isfinite(u)))
 
         if norm(u, np.inf) > 1.:
-            self.log.info('saturation')
             u[u > 1.] = 1.
             u[u < -1.] = -1.
         assert(norm(u, np.inf) <= 1.)
@@ -213,7 +212,19 @@ class DMWindow(QMainWindow):
 
         hwdms = []
         if args.hardware:
-            from bmc import BMC
+            fail = 1
+            try:
+                from bmc import BMC
+                fail = 0
+            except Exception:
+                pass
+            try:
+                from devwraps.bmc import BMC
+                fail = 0
+            except Exception:
+                pass
+            if fail:
+                raise ValueError('Cannot open DMs')
             for s in serials:
                 d = BMC()
                 d.open(s)
