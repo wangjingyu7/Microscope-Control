@@ -114,14 +114,14 @@ if __name__ == '__main__':
         metavar='INDICES',
         help='''
 Comma separated list of Zernike modes to ignore, e.g.,
-1,2,3,4 to ignore piston, tip, tilt, and defocus.
-NB: DO NOT USE SPACES in this list!''')
+"1,2,3,4" to ignore piston, tip, tilt, and defocus.
+NB: DO NOT USE SPACES and USE QUOTES!''')
     parser.add_argument(
         '--include', type=str, default='', metavar='INDICES',
         help='''
 Comma separated list of Zernike modes to include. E.g.,
-5,6 to ignore the first order astigmatisms.
-NB: DO NOT USE SPACES in this list!''')
+"5,6" to ignore the first order astigmatisms.
+NB: DO NOT USE SPACES!''')
     parser.add_argument(
         '--min', type=int, default=5,
         help='Minimum Zernike Noll index to consider')
@@ -147,7 +147,7 @@ NB: DO NOT USE SPACES in this list!''')
 
     with File(calibfile, 'r') as f:
         wavelength = f['/WeightedLSCalib/wavelength'][()]
-        k = wavelength/(2*np.pi)/1000
+        k = wavelength/(2*np.pi)
         H = k*f['/WeightedLSCalib/H'][()]
         C = f['/WeightedLSCalib/C'][()]/k
         z = f['/WeightedLSCalib/z0'][()]

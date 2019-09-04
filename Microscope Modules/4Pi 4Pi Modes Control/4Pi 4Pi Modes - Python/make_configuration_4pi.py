@@ -113,6 +113,10 @@ if __name__ == '__main__':
         '--no-zernike-orders', dest='zernike_orders', action='store_false')
     parser.set_defaults(zernike_orders=0)
 
+    parser.add_argument('--negate', dest='negate', action='store_true')
+    parser.add_argument('--no-negate', dest='negate', action='store_false')
+    parser.set_defaults(negate=0)
+
     parser.add_argument('--flipx', dest='flipx', action='store_true')
     parser.add_argument('--no-flipx', dest='flipx', action='store_false')
     parser.set_defaults(flipx=0)
@@ -129,16 +133,16 @@ if __name__ == '__main__':
         metavar='INDICES',
         help='''
 Comma separated list of 4Pi modes to ignore, e.g.,
--1,2,3,4 to ignore contravariant piston and covariant tip/tilt/defocus.
+"-1,2,3,4" to ignore contravariant piston and covariant tip/tilt/defocus.
 The sign denotes co/contra variant. The absolute value denotes a Noll index.
-NB: DO NOT USE SPACES in this list!''')
+NB: DO NOT USE SPACES and USE QUOTES!''')
     parser.add_argument(
         '--include', type=str, default='', metavar='INDICES',
         help='''
 Comma separated list of 4Pi modes to include, e.g.,
--1,2,3,4 to ignore contravariant piston and covariant tip/tilt/defocus.
+"11,22" to ignore contravariant piston and covariant tip/tilt/defocus.
 The sign denotes co/contra variant. The absolute value denotes a Noll index.
-NB: DO NOT USE SPACES in this list!''')
+NB: DO NOT USE SPACES and USE QUOTES!''')
     parser.add_argument(
         '--min', type=int, default=1,
         help='Minimum Zernike Noll index to consider')
@@ -158,7 +162,7 @@ NB: DO NOT USE SPACES in this list!''')
     for c in sorted(cfiles):
         with File(c, 'r') as f:
             wavelength = f['/WeightedLSCalib/wavelength'][()]
-            k = wavelength/(2*np.pi)/1000
+            k = wavelength/(2*np.pi)
             H = k*f['/WeightedLSCalib/H'][()]
             C = f['/WeightedLSCalib/C'][()]/k
             d = {
@@ -213,6 +217,8 @@ NB: DO NOT USE SPACES in this list!''')
     # control matrix
     C0 = calibs[0]['C']
     C1 = calibs[1]['C']
+    if args.negate:
+        C1 = -C1
 
     O1 = np.dot(Fy, np.dot(Fx, R))
     C0 = np.dot(C0, O1.T)
