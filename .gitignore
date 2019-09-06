@@ -1,1 +1,21 @@
 *.lnk
+Documentation/Driver Signature Disable.pdf
+Documentation/LabView USB Instrument Control Tutorial.pdf
+Microscope Modules/4Pi Capture Manager/Default ROI - 2019-07-24 to 2019-08-02.txt
+Microscope Modules/4Pi Capture Manager/Default ROI - Example.txt
+Microscope Modules/4Pi Capture Manager/Default ROI - ExampleFromEd.txt
+Microscope Modules/4Pi Capture Manager/Default ROI.txt
+Microscope Modules/4Pi Capture Manager/Default ROI - Example.txt
+Microscope Modules/4Pi Capture Manager/Default ROI.txt
+Microscope Modules/4Pi Capture Manager/Quadrant Coordinates Array - 2019-07-24 to 2019-08-02.txt
+Microscope Modules/4Pi Capture Manager/Quadrant Coordinates Array - Example.txt
+Microscope Modules/4Pi Capture Manager/Quadrant Coordinates Array - ExampleFromEd.txt
+Microscope Modules/4Pi Capture Manager/Quadrant Coordinates Array.txt
+*.txt
+*.modes
+*.pdf
+Microscope Modules/4Pi Dual DM Control/4Pi Dual DM - Default Files/Last Used Scan Settings.json
+Microscope Modules/4Pi Capture Manager/Quadrant Coordinates Array.txt
+Microscope Modules/4Pi Capture Manager/Quadrant Coordinates Array - Example.txt
+Microscope Modules/4Pi Capture Manager/Quadrant Coordinates Array.txt
+Microscope Modules/4Pi Dual DM Control/4Pi Dual DM - Default Files/oxDefault Flat - Lower.txt
