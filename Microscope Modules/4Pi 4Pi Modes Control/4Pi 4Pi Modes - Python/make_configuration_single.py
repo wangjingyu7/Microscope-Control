@@ -100,6 +100,13 @@ if __name__ == '__main__':
         '--no-zernike-noll', dest='zernike_noll', action='store_false')
     parser.set_defaults(zernike_noll=1)
 
+    parser.add_argument(
+        '--zernike-orders', dest='zernike_orders', action='store_true',
+        help='Include radial and azimuthal order of Zernike aberrations')
+    parser.add_argument(
+        '--no-zernike-orders', dest='zernike_orders', action='store_false')
+    parser.set_defaults(zernike_orders=0)
+
     parser.add_argument('--flipx', dest='flipx', action='store_true')
     parser.add_argument('--no-flipx', dest='flipx', action='store_false')
     parser.set_defaults(flipx=0)
@@ -132,18 +139,18 @@ NB: DO NOT USE SPACES!''')
 
     deffiles = get_def_files()
     cfiles = glob(path.join(deffiles, '*.h5'))
-    selection = -1
     while True:
         print('Select the number of the DM you want to use:')
         for i, c in enumerate(cfiles):
             print('', str(i), c)
         try:
-            sel = input('Choose number: ')
-            calibfile = cfiles[int(sel)]
+            selection = input('Choose number: ')
+            calibfile = cfiles[int(selection)]
             print()
             break
         except Exception:
             pass
+    selection = int(selection)
 
     with File(calibfile, 'r') as f:
         wavelength = f['/WeightedLSCalib/wavelength'][()]
@@ -154,6 +161,13 @@ NB: DO NOT USE SPACES!''')
         n = int(f['/WeightedLSCalib/cart/RZern/n'][()])
         serial = f['/WeightedLSCalib/dm_serial'][()]
         print(f'DM: {serial} file: {calibfile}')
+    del serial
+
+    serials = []
+    cfiles = glob(path.join(get_def_files(), '*.h5'))
+    for c in sorted(cfiles):
+        with File(c, 'r') as f:
+            serials.append(f['/WeightedLSCalib/dm_serial'][()])
 
     r = RZern(n)
     assert(r.nk == H.shape[0])
@@ -177,7 +191,7 @@ NB: DO NOT USE SPACES!''')
     conf = {}
 
     # serial numbers
-    conf['Serials'] = [serial]
+    conf['Serials'] = serials
 
     # flats excluding ttd
     z[:4] = 0
@@ -194,7 +208,18 @@ NB: DO NOT USE SPACES!''')
     print(zernike_indices)
     print()
 
-    conf['Matrix'] = C[:, zernike_indices].tolist()
+    C = C[:, zernike_indices - 1]
+    CC = np.zeros((2*C.shape[0], C.shape[1]))
+    if selection == 0:
+        CC[:C.shape[0], :] = C
+    else:
+        CC[C.shape[0]:, :] = C
+#    print(C.shape)
+#    import matplotlib.pyplot as plt
+#    plt.imshow(CC)
+#    plt.show()
+
+    conf['Matrix'] = CC.tolist()
 
     # mode names
     ntab = r.ntab
