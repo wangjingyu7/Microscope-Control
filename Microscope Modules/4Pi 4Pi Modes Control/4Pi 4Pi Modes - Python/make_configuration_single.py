@@ -138,7 +138,7 @@ NB: DO NOT USE SPACES!''')
     args = parser.parse_args()
 
     deffiles = get_def_files()
-    cfiles = glob(path.join(deffiles, '*.h5'))
+    cfiles = sorted(glob(path.join(deffiles, '*.h5')))
     while True:
         print('Select the number of the DM you want to use:')
         for i, c in enumerate(cfiles):
@@ -164,7 +164,6 @@ NB: DO NOT USE SPACES!''')
     del serial
 
     serials = []
-    cfiles = glob(path.join(get_def_files(), '*.h5'))
     for c in sorted(cfiles):
         with File(c, 'r') as f:
             serials.append(f['/WeightedLSCalib/dm_serial'][()])
@@ -212,12 +211,10 @@ NB: DO NOT USE SPACES!''')
     CC = np.zeros((2*C.shape[0], C.shape[1]))
     if selection == 0:
         CC[:C.shape[0], :] = C
-    else:
+    elif selection == 1:
         CC[C.shape[0]:, :] = C
-#    print(C.shape)
-#    import matplotlib.pyplot as plt
-#    plt.imshow(CC)
-#    plt.show()
+    else:
+        raise NotImplementedError()
 
     conf['Matrix'] = CC.tolist()
 

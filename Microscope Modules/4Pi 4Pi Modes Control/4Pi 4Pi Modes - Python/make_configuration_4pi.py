@@ -151,7 +151,7 @@ NB: DO NOT USE SPACES and USE QUOTES!''')
         help='Minimum Zernike Noll index to consider')
     args = parser.parse_args()
 
-    cfiles = glob(path.join(get_def_files(), '*.h5'))
+    cfiles = sorted(glob(path.join(get_def_files(), '*.h5')))
     if len(cfiles) != 2:
         print(
             'Leave only *TWO* HDF5 calibration files in the ' +
@@ -159,7 +159,7 @@ NB: DO NOT USE SPACES and USE QUOTES!''')
         sys.exit()
 
     calibs = []
-    for c in sorted(cfiles):
+    for c in cfiles:
         with File(c, 'r') as f:
             wavelength = f['/WeightedLSCalib/wavelength'][()]
             k = wavelength/(2*np.pi)
