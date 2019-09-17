@@ -15,7 +15,7 @@ from czernike import RZern
 
 import matplotlib.pyplot as plt  # noqa
 
-from make_configuration_4pi import get_def_files
+from make_configuration_4pi import get_def_files, default_name
 
 
 def get_noll_indices(args):
@@ -44,41 +44,6 @@ def get_noll_indices(args):
     assert(np.unique(zernike_indices).size == zernike_indices.size)
 
     return zernike_indices
-
-
-def default_name(args, i, n, m):
-    if i == 1:
-        s = 'piston'
-    elif i == 2:
-        s = ' tip'
-    elif i == 3:
-        s = 'tilt'
-    elif i == 4:
-        s = 'defocus'
-    elif m == 0:
-        s = 'spherical'
-    elif abs(m) == 1:
-        s = 'coma'
-    elif abs(m) == 2:
-        s = 'astigmatism'
-    elif abs(m) == 3:
-        s = 'trefoil'
-    elif abs(m) == 4:
-        s = 'quadrafoil'
-    elif abs(m) == 5:
-        s = 'pentafoil'
-    else:
-        s = ''
-
-    str1 = []
-    if args.zernike_noll:
-        str1.append(f'{i}')
-    if args.zernike_name:
-        str1.append(s)
-    if args.zernike_orders:
-        str1.append(f'{n}:{m}')
-
-    return ' '.join(str1)
 
 
 if __name__ == '__main__':

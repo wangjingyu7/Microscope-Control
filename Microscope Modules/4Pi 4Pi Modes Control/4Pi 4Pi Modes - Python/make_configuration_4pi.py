@@ -56,7 +56,7 @@ def default_name(args, i, n, m):
     if abs(i) == 1:
         s = 'piston'
     elif abs(i) == 2:
-        s = ' tip'
+        s = 'tip'
     elif abs(i) == 3:
         s = 'tilt'
     elif abs(i) == 4:
