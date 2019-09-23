@@ -165,8 +165,14 @@ NB: DO NOT USE SPACES!''')
     conf['Serials'] = serials
 
     # flats excluding ttd
+    u = np.zeros(2*C.shape[0])
     z[:4] = 0
-    u = -np.dot(C, z)
+    if selection == 0:
+        u[:C.shape[0]] = -np.dot(C, z)
+    elif selection == 1:
+        u[C.shape[0]:] = -np.dot(C, z)
+    else:
+        raise NotImplementedError()
     conf['Flats'] = u.tolist()
 
     # control matrix
