@@ -72,6 +72,9 @@ if __name__ == '__main__':
         '--no-zernike-orders', dest='zernike_orders', action='store_false')
     parser.set_defaults(zernike_orders=0)
 
+    parser.add_argument(
+        '--dm-index', type=int, default=-1, help='Select which DM to use')
+
     parser.add_argument('--flipx', dest='flipx', action='store_true')
     parser.add_argument('--no-flipx', dest='flipx', action='store_false')
     parser.set_defaults(flipx=0)
@@ -104,18 +107,22 @@ NB: DO NOT USE SPACES!''')
 
     deffiles = get_def_files()
     cfiles = sorted(glob(path.join(deffiles, '*.h5')))
-    while True:
-        print('Select the number of the DM you want to use:')
-        for i, c in enumerate(cfiles):
-            print('', str(i), c)
-        try:
-            selection = input('Choose number: ')
-            calibfile = cfiles[int(selection)]
-            print()
-            break
-        except Exception:
-            pass
-    selection = int(selection)
+    try:
+        selection = int(args.dm_index)
+        calibfile = cfiles[int(selection)]
+    except Exception:
+        while True:
+            print('Select the number of the DM you want to use:')
+            for i, c in enumerate(cfiles):
+                print('', str(i), c)
+            try:
+                selection = input('Choose number: ')
+                calibfile = cfiles[int(selection)]
+                print()
+                break
+            except Exception:
+                pass
+        selection = int(selection)
 
     with File(calibfile, 'r') as f:
         wavelength = f['/WeightedLSCalib/wavelength'][()]
