@@ -5,3 +5,7 @@
    Choose your preferred options
 *) Type `python make_configuration_4pi.py ` followed by your preferred options without `--help` and hit enter
 *) Test the modes by running `python test_configuration.py`
+
+
+examples: 
+python make_conifuration_single.py --min 4 --max 22 -exclude "1,2,3"
