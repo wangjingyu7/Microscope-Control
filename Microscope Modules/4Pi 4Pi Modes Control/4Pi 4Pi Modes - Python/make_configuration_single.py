@@ -167,7 +167,6 @@ NB: DO NOT USE SPACES!''')
     # flats excluding ttd
     u = np.zeros(2*C.shape[0])
     z[:4] = 0
-<<<<<<< HEAD
     u = -np.dot(C, z)
     if selection == 0:
         conf['Flats'] = np.concatenate((u, np.zeros(140,))).tolist()
@@ -175,7 +174,7 @@ NB: DO NOT USE SPACES!''')
         conf['Flats'] = np.concatenate((np.zeros(140,), u)).tolist()
     else:
         raise NotImplementedError()
-=======
+
     if selection == 0:
         u[:C.shape[0]] = -np.dot(C, z)
     elif selection == 1:
@@ -183,7 +182,6 @@ NB: DO NOT USE SPACES!''')
     else:
         raise NotImplementedError()
     conf['Flats'] = u.tolist()
->>>>>>> 4pimodes
 
     # control matrix
     O1 = np.dot(Fy, np.dot(Fx, R))
