@@ -14,7 +14,7 @@ C:\Users\engs1793\OneDrive - Nexus365\4pi_workspace\Software\Microscope-Control\
 C:\Users\engs1793\OneDrive - Nexus365\4pi_workspace\Software\Microscope-Control\Microscope Modules\4Pi Capture Manager\4Pi Capture Manager.vi
 C:\Users\engs1793\OneDrive - Nexus365\4pi_workspace\Software\Microscope-Control\Microscope Modules\XY Sample Stage Control\XY Sample Stage.vi
 C:\Users\engs1793\OneDrive - Nexus365\4pi_workspace\Software\Microscope-Control\Microscope Modules\4Pi Objective Image Alignment\4Pi Objective Image Alignment.vi
-C:\Users\engs1793\OneDrive - Nexus365\4pi_workspace\Software\Microscope-Control\Microscope Modules\4Pi Astigmatism Alignment\4Pi Astigmatism Alignment.vi
 C:\Users\engs1793\OneDrive - Nexus365\4pi_workspace\Software\Microscope-Control\Microscope Modules\4Pi Dual DM Control\4Pi Dual DM Control.vi
 C:\Users\engs1793\OneDrive - Nexus365\4pi_workspace\Software\Microscope-Control\Microscope Modules\4Pi Interference Locator\4Pi Interference Locator.vi
-
+C:\Users\engs1793\OneDrive - Nexus365\4pi_workspace\Software\Microscope-Control\Microscope Modules\4Pi Objective Lock\4Pi Objective Lock.vi
+C:\Users\engs1793\OneDrive - Nexus365\4pi_workspace\Software\Microscope-Control\Microscope Modules\4Pi Astigmatism Alignment\4Pi Astigmatism Alignment.vi
